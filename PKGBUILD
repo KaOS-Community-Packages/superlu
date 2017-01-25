@@ -8,7 +8,7 @@ license=('custom')
 depends=('gcc-libs' 'lapack')
 makedepends=('cmake')
 source=(
-    'http://crd-legacy.lbl.gov/~xiaoye/SuperLU/superlu_5.2.1.tar.gz'
+    'http://crd-legacy.lbl.gov/~xiaoye/SuperLU/superlu_${pkgver}.tar.gz'
     'LICENSE'
 )
 md5sums=(
@@ -17,26 +17,25 @@ md5sums=(
 )
 
 prepare() {
-    cd "${srcdir}/SuperLU_5.2.1"
+    cd "${srcdir}/SuperLU_${pkgver}"
     mkdir -p build
 }
 
 build() {
-    cd "${srcdir}/SuperLU_5.2.1/build"
-    cmake .. -DCMAKE_INSTALL_PREFIX=/usr -DBUILD_SHARED_LIBS=true
+    cd "${srcdir}/SuperLU_${pkgver}/build"
+    cmake .. -DCMAKE_INSTALL_PREFIX=/usr -DBUILD_SHARED_LIBS=true -DCMAKE_INSTALL_LIBDIR=lib
     make
 }
 
 check() {
-    cd "${srcdir}/SuperLU_5.2.1/build"
+    cd "${srcdir}/SuperLU_${pkgver}/build"
     make test
 }
 
 package() {
-    cd "${srcdir}/SuperLU_5.2.1/build"
+    cd "${srcdir}/SuperLU_${pkgver}/build"
     make DESTDIR="${pkgdir}/" install
     install -dm755 "${pkgdir}"/usr/share/licenses/superlu
     install -m644 ../../LICENSE "${pkgdir}"/usr/share/licenses/superlu
-    # installs to lib64 so we rename it here
-    mv "${pkgdir}"/usr/lib64 "${pkgdir}"/usr/lib
+
 }
